@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Gestion Articles</h1>
+
+    <div class="d-flex justify-content-between mb-3">
+        <a href="{{ path('app_admin_article_edit') }}"
+           class="btn btn-outline-primary">
+            Ecrire un article
+        </a>
+        <button class="btn btn-outline-info" id="btn-search">
+            Recherche
+        </button>
+    </div>
+
+        <div class="card bg-light mb-3 collapse" id="collapseSearch">
+            <div class="card-body">
+                {{ form_start(search_form) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(search_form.title) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(search_form.category) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(search_form.start_date) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(search_form.end_date) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(search_form.with_comments) }}
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-info">
+                                Rechercher
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {{ form_end(search_form) }}
+            </div>
+        </div>
+
+    <table class="table">
+        <caption>{{ pager.count }} articles</caption>
+        <tr class="table-dark">
+            <th>Id</th>
+            <th>Titre</th>
+            <th>Date pub.</th>
+            <th>Catégorie</th>
+            <th>Auteur</th>
+            <th>Commentaires</th>
+            <th width="300px"></th>
+        </tr>
+        {% for article in articles %}
+            <tr>
+                <td>{{ article.id }}</td>
+                <td>{{ article.title }}</td>
+                <td>{{ article.publicationDate|date('d/m/Y H:i') }}</td>
+                <td>{{ article.category }}</td>
+                <td>{{ article.author }}</td>
+                <td class="text-center">
+                    <a href="{{ path('app_admin_comment_index', {'id': article.id}) }}">
+                        {{ article.comments|length }}
+                    </a>
+                </td>
+                <td>
+                    <a href="{{ path('app_admin_article_edit', {'id': article.id}) }}"
+                       class="btn btn-primary">
+                        Modifier
+                    </a>
+                    <a href="{{ path('app_admin_article_delete', {'id': article.id}) }}"
+                       class="btn btn-danger">
+                        Supprimer
+                    </a>
+                    <a href="{{ path('app_admin_article_ajaxcontent', {'id': article.id}) }}"
+                       class="btn btn-outline-secondary btn-content">
+                        Aperçu
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7" class="text-center">Aucun article</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    {% if pager.haveToPaginate %}
+        <div class="d-flex justify-content-center">
+            <div class="pagerfanta">
+                {{ pagerfanta(pager, 'twitter_bootstrap4_translated', { 'omitFirstPage': true }) }}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="modal" tabindex="-1" role="dialog" id="modal-content">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Aperçu</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('admin_article') }}
+{% endblock %}
