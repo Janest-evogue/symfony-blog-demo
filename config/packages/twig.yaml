@@ -5,4 +5,6 @@ twig:
     exception_controller: null
 
     # intégration bootstrap des formulaires
-    form_themes: ['bootstrap_4_layout.html.twig']
+    form_themes:
+        - 'bootstrap_4_layout.html.twig'
+        - 'form/tag.html.twig'

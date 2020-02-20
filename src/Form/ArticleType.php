@@ -6,6 +6,7 @@ use App\Entity\Article;
 use App\Entity\Category;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -55,7 +56,19 @@ class ArticleType extends AbstractType
                     'required' => false
                 ]
             )
-            ->add()
+            ->add(
+                'tags',
+                CollectionType::class,
+                [
+                    'entry_type' => TagType::class,
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'by_reference' => false,
+                    'attr' => [
+                        'class' => 'tag_input'
+                    ]
+                ]
+            )
         ;
     }
 
